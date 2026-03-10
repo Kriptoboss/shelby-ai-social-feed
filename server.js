@@ -4,13 +4,12 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
+app.use(express.static("public"));
 
 const PORT = process.env.PORT || 3001;
 
-// basit hafıza içi feed
 const feed = [];
 
-// basit içerik üretici
 function generatePost(topic = "crypto") {
   const templates = [
     `Breaking: ${topic} ecosystem is heating up faster than expected.`,
@@ -37,7 +36,6 @@ function generatePost(topic = "crypto") {
   };
 }
 
-// health
 app.get("/", (req, res) => {
   res.json({
     ok: true,
@@ -46,7 +44,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// feed listele
 app.get("/feed", (req, res) => {
   res.json({
     ok: true,
@@ -55,7 +52,6 @@ app.get("/feed", (req, res) => {
   });
 });
 
-// AI post üret ve feed'e ekle
 app.post("/generate", (req, res) => {
   try {
     const { topic } = req.body || {};
@@ -75,7 +71,6 @@ app.post("/generate", (req, res) => {
   }
 });
 
-// manuel upload benzeri endpoint
 app.post("/upload", (req, res) => {
   try {
     const { text, topic, fileUrl } = req.body || {};

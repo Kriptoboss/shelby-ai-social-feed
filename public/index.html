@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Shelby AI Social Feed</title>
+  <style>
+    body { font-family: Arial; background:#0f172a; color:#e5e7eb; margin:0; }
+    header { padding:16px 24px; background:#111827; border-bottom:1px solid #1f2937; }
+    .container { max-width:760px; margin:24px auto; padding:0 16px; }
+    .card { background:#111827; border:1px solid #1f2937; border-radius:10px; padding:14px 16px; margin-bottom:12px; }
+    .topic { font-size:12px; color:#60a5fa; margin-bottom:6px; }
+    .time { font-size:11px; color:#9ca3af; margin-top:6px; }
+    button { padding:8px 12px; border:0; border-radius:8px; background:#2563eb; color:#fff; cursor:pointer; }
+  </style>
+</head>
+<body>
+<header>
+  <strong>Shelby AI Social Feed Demo</strong>
+</header>
+
+<div class="container">
+  <button onclick="generate()">Generate AI Post</button>
+  <div id="feed"></div>
+</div>
+
+<script>
+async function loadFeed(){
+  const res = await fetch('/feed');
+  const data = await res.json();
+  const feed = document.getElementById('feed');
+  feed.innerHTML = '';
+  data.items.forEach(p=>{
+    const el = document.createElement('div');
+    el.className='card';
+    el.innerHTML =
+      '<div class="topic">'+p.topic+'</div>' +
+      '<div>'+p.text+'</div>' +
+      '<div class="time">'+new Date(p.createdAt).toLocaleString()+'</div>';
+    feed.appendChild(el);
+  });
+}
+
+async function generate(){
+  await fetch('/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic:'crypto'})});
+  loadFeed();
+}
+
+loadFeed();
+setInterval(loadFeed,4000);
+</script>
+</body>
+</html>
